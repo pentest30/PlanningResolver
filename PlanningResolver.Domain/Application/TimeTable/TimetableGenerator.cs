@@ -1,5 +1,7 @@
 ﻿using PlaninngResolver.Domain.Entities;
 
+namespace PlaninngResolver.Domain.Application.Rules;
+
 public class TimetableGenerator
 {
     public List<Lecture> GenerateInitialTimetable(List<Tc> tcs, List<ClassRoom> rooms)
@@ -18,7 +20,9 @@ public class TimetableGenerator
                     SectionId = tc.SectionId,
                     GroupeId = tc.GroupeId,
                     ClassRoomTypeId = tc.ClassRoomTypeId,
-                    Teacher = tc.Teacher
+                    Teacher = tc.Teacher,
+                    SpecialiteId = tc.Course.SpecialiteId,
+                    FaculteId = tc.Teacher.FaculteId,
                 };
 
                 AssignSeanceAndRoom(slot, tc, rooms, timetable, random);

@@ -5,8 +5,7 @@ namespace PlaninngResolver.Domain.Entities
   [Table("Lectures")]
   public class Lecture
   {
-   
-    public Int64 Id { get; set; }
+    public int Id { get; set; }
     public int TeacherId { get; set; }
     //[Column, NotNull]
     [NotMapped]

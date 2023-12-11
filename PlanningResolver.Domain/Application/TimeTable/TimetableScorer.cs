@@ -17,6 +17,7 @@ public class TimetableScorer
         score-= CalculateSectionConflicts(generation);
         score-= CalculateTeacherConflicts(generation);
         score-=CalculateClassRoomConflicts(generation);
+        score *= 1000;
         score += CalculateSoftFitness(generation);
         // Add more scoring rules based on other constraints
 
@@ -138,8 +139,8 @@ public class TimetableScorer
         foreach (var group in solution.GroupBy(x => x.ClassRoomId))
         {
             var lectures = group.OrderBy(l => l.Seance).ToList();
-/*
-            foreach (var lecture in lectures)
+
+            /*foreach (var lecture in lectures)
             {
                 if (lecture.ClassRoom.SeanceLbrSalles.Count > 0)
                 {
@@ -147,8 +148,7 @@ public class TimetableScorer
                         ? -100
                         : 100;
                 }
-            }
-*/
+            }*/
             // Succession Penalty/Bonus
             for (int i = 0; i < lectures.Count; i++)
             {

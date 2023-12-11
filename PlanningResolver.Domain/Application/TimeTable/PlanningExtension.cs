@@ -1,6 +1,6 @@
 ﻿using PlaninngResolver.Domain.Application.DTOs;
 
-namespace PlaninngResolver.Domain.Application;
+namespace PlaninngResolver.Domain.Application.Rules;
 
 public static class PlanningExtension
 {

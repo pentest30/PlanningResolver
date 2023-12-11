@@ -3,7 +3,7 @@ using PlaninngResolver.Domain.Application.DTOs;
 using PlaninngResolver.Domain.Entities;
 using PlaninngResolver.Domain.Interfaces;
 
-namespace PlaninngResolver.Domain.Application;
+namespace PlaninngResolver.Domain.Application.Rules;
 
 public class ResolverService : IResolverService
 {

@@ -1,8 +1,6 @@
-﻿using PlaninngResolver.Domain.Application.DTOs;
-using PlaninngResolver.Domain.Application.Rules;
-using PlaninngResolver.Domain.Entities;
+﻿using PlaninngResolver.Domain.Entities;
 
-namespace PlaninngResolver.Domain.Application;
+namespace PlaninngResolver.Domain.Application.Rules;
 
 public class TimetableSearch
 {

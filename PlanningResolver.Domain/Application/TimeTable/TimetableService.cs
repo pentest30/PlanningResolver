@@ -1,4 +1,4 @@
-﻿namespace PlaninngResolver.Domain.Application;
+﻿namespace PlaninngResolver.Domain.Application.Rules;
 
 public interface ITimetableService
 {

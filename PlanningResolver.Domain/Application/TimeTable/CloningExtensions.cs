@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Text.Json;
 
-namespace PlaninngResolver.Domain.Application
+namespace PlaninngResolver.Domain.Application.Rules
 {
     /// <summary>
     /// https://stackoverflow.com/questions/78536/deep-cloning-objects

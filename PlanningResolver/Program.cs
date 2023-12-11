@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using NRules;
-using NRules.Fluent;
 using PlaninngResolver.Domain.Application;
 using PlaninngResolver.Domain.Application.Rules;
 using PlaninngResolver.Domain.Infrastructure.Persistence;
@@ -17,16 +15,12 @@ class Program
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
-        var repository = new RuleRepository();
-        repository.Load(x => x.From(typeof(ValidLectureRule).Assembly));
-        var sessionFactory = repository.Compile();
-        var serviceProvider = new ServiceCollection()
+         var serviceProvider = new ServiceCollection()
             .AddSingleton(BuildConfiguration())
             .AddDbContext<PlanningDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("AccessDb")))
             .AddScoped(typeof(IRepository<>), typeof(Repository<>))
             .AddScoped(typeof(IResolverService), typeof(ResolverService))
-            .AddScoped<ISessionFactory>(serviceProvider => sessionFactory)
             // Add other services
             .BuildServiceProvider();
 
