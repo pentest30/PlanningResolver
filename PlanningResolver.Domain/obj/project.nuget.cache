@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "dgSpecHash": "ehLPBakqFUm20xKHJ7bNxAkf2geE5qF9HyCTD32kXNGXcF/R+sr7Kyr8mONqXiSUZYXi0X89k787jeJHdr++Zg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\i.baouche\\RiderProjects\\PlanningResolver\\PlanningResolver.Domain\\PlanningResolver.Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\i.baouche\\.nuget\\packages\\entityframeworkcore.jet\\7.0.3\\entityframeworkcore.jet.7.0.3.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\entityframeworkcore.jet.data\\7.0.3\\entityframeworkcore.jet.data.7.0.3.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\microsoft.entityframeworkcore\\7.0.14\\microsoft.entityframeworkcore.7.0.14.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\7.0.14\\microsoft.entityframeworkcore.abstractions.7.0.14.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\7.0.14\\microsoft.entityframeworkcore.analyzers.7.0.14.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\7.0.10\\microsoft.entityframeworkcore.relational.7.0.10.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\7.0.0\\microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\microsoft.extensions.caching.memory\\7.0.0\\microsoft.extensions.caching.memory.7.0.0.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\7.0.0\\microsoft.extensions.configuration.abstractions.7.0.0.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\8.0.0\\microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\microsoft.extensions.logging\\7.0.0\\microsoft.extensions.logging.7.0.0.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\7.0.0\\microsoft.extensions.logging.abstractions.7.0.0.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\microsoft.extensions.options\\7.0.0\\microsoft.extensions.options.7.0.0.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\microsoft.extensions.primitives\\7.0.0\\microsoft.extensions.primitives.7.0.0.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\nrules\\0.9.3\\nrules.0.9.3.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\nrules.fluent\\0.9.3\\nrules.fluent.0.9.3.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\nrules.rulemodel\\0.9.3\\nrules.rulemodel.0.9.3.nupkg.sha512",
+    "C:\\Users\\i.baouche\\.nuget\\packages\\nrules.runtime\\0.9.3\\nrules.runtime.0.9.3.nupkg.sha512"
+  ],
+  "logs": []
+}

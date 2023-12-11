@@ -1,0 +1,12 @@
+C:\Users\i.baouche\RiderProjects\PlanningResolver\PlanningResolver.Domain\bin\Debug\net7.0\PlanningResolver.Domain.deps.json
+C:\Users\i.baouche\RiderProjects\PlanningResolver\PlanningResolver.Domain\bin\Debug\net7.0\PlanningResolver.Domain.dll
+C:\Users\i.baouche\RiderProjects\PlanningResolver\PlanningResolver.Domain\bin\Debug\net7.0\PlanningResolver.Domain.pdb
+C:\Users\i.baouche\RiderProjects\PlanningResolver\PlanningResolver.Domain\obj\Debug\net7.0\PlanningResolver.Domain.csproj.AssemblyReference.cache
+C:\Users\i.baouche\RiderProjects\PlanningResolver\PlanningResolver.Domain\obj\Debug\net7.0\PlanningResolver.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\i.baouche\RiderProjects\PlanningResolver\PlanningResolver.Domain\obj\Debug\net7.0\PlanningResolver.Domain.AssemblyInfoInputs.cache
+C:\Users\i.baouche\RiderProjects\PlanningResolver\PlanningResolver.Domain\obj\Debug\net7.0\PlanningResolver.Domain.AssemblyInfo.cs
+C:\Users\i.baouche\RiderProjects\PlanningResolver\PlanningResolver.Domain\obj\Debug\net7.0\PlanningResolver.Domain.csproj.CoreCompileInputs.cache
+C:\Users\i.baouche\RiderProjects\PlanningResolver\PlanningResolver.Domain\obj\Debug\net7.0\PlanningResolver.Domain.dll
+C:\Users\i.baouche\RiderProjects\PlanningResolver\PlanningResolver.Domain\obj\Debug\net7.0\refint\PlanningResolver.Domain.dll
+C:\Users\i.baouche\RiderProjects\PlanningResolver\PlanningResolver.Domain\obj\Debug\net7.0\PlanningResolver.Domain.pdb
+C:\Users\i.baouche\RiderProjects\PlanningResolver\PlanningResolver.Domain\obj\Debug\net7.0\ref\PlanningResolver.Domain.dll
