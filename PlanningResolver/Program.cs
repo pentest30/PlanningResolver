@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PlaninngResolver.Domain.Application;
-using PlaninngResolver.Domain.Application.Rules;
 using PlaninngResolver.Domain.Application.TimeTable;
 using PlaninngResolver.Domain.Infrastructure.Persistence;
 using PlaninngResolver.Domain.Infrastructure.Persistence.Repositories;

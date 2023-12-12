@@ -32,8 +32,8 @@ public class ResolverService : IResolverService
         sol.Lectures = planing;
         sol.CalculateFitness();
         var simulation = new TimetableSearch(planing, rooms);
-        var bestSol = simulation.RunHillClimbing();
-        simulation.Run(bestSol);
+        //var bestSol = simulation.RunHillClimbing();
+        simulation.Run(planing);
         foreach (var lecture in simulation.GetBestTimetable())
         {
             lecture.Teacher = null;
