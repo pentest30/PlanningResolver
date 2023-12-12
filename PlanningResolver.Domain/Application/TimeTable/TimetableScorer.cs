@@ -1,6 +1,7 @@
 ﻿using PlaninngResolver.Domain.Entities;
+using PlaninngResolver.Domain.Interfaces;
 
-namespace PlaninngResolver.Domain.Application.Rules;
+namespace PlaninngResolver.Domain.Application.TimeTable;
 
 public class TimetableScorer
 {
@@ -13,12 +14,11 @@ public class TimetableScorer
     public double CalculateScore(List<Lecture> generation)
     {
         double score = 0;
-        score-= CalculateGroupConflicts(generation);
-        score-= CalculateSectionConflicts(generation);
-        score-= CalculateTeacherConflicts(generation);
-        score-=CalculateClassRoomConflicts(generation);
-        score *= 1000;
-        score += CalculateSoftFitness(generation);
+        score+= CalculateGroupConflicts(generation);
+        score+= CalculateSectionConflicts(generation);
+        score+= CalculateTeacherConflicts(generation);
+        score+=CalculateClassRoomConflicts(generation);
+        score+= CalculateSoftFitness(generation);
         // Add more scoring rules based on other constraints
 
         return  score;
@@ -32,15 +32,13 @@ public class TimetableScorer
             for (int i = 1; i <= 36; i++)
             {
                 if (group.Count(x => x.Seance == i) > 1)
-                {
-                    score += 1;
-
-                }
+                    score -= 1000; // Subtract 50 for each group conflict
             }
         }
-
+    
         return score;
     }
+
 
     private static double CalculateSectionConflicts(List<Lecture> generation)
     {
@@ -53,14 +51,13 @@ public class TimetableScorer
                 var totalInGroup = section.Count(w => w.GroupeId != 0 && w.Seance == i);
 
                 if (totalInGroup > 0 && totalInSection > totalInGroup || totalInGroup == 0 && totalInSection > 1)
-                {
-                    score += 1;
-                   
-                }
+                    score -= 1000; // Subtract 50 for each section conflict
             }
         }
+   
         return score;
     }
+
 
     private static double CalculateTeacherConflicts(List<Lecture> generation)
     {
@@ -70,14 +67,13 @@ public class TimetableScorer
             for (int i = 0; i < 36; i++)
             {
                 if (teacher.Count(w => w.Seance == i) > 1)
-                {
-                    score ++;
-                    
-                }
+                    score -= 1000; // Subtract 100 for each teacher conflict
             }
         }
+   
         return score;
     }
+
 
     private static double CalculateClassRoomConflicts(List<Lecture> generation)
     {
@@ -87,16 +83,13 @@ public class TimetableScorer
             for (int i = 1; i <= 36; i++)
             {
                 if (room.Count(w => w.Seance == i) > 1)
-                {
-                    
-                    score++;
-                   
-                }
+                    score -= 1000; // Subtract 50 for each classroom conflict
             }
         } 
+   
         return score;
-        
     }
+
 
     private int CalculateSoftFitness(List<Lecture> solution)
     {
@@ -106,18 +99,18 @@ public class TimetableScorer
         foreach (var lecture in solution)
         {
             if (CheckIfExistInFirstPeriod(lecture.Seance) && lecture.Periode != 2)
-                score += 10;
+                score += 1;
             else if (CheckIfExistForSecondPeriod(lecture.Seance) && lecture.Periode != 2)
-                score -= 10;
+                score -= 1;
 
             if (CheckIfExistInFirstPeriod(lecture.Seance) && lecture.Periode == 1)
-                score += 10;
+                score += 1;
             else if (CheckIfExistForSecondPeriod(lecture.Seance) && lecture.Periode == 2)
-                score += 10;
+                score += 1;
             else if (CheckIfExistInFirstPeriod(lecture.Seance) && lecture.Periode == 2)
-                score -= 10;
+                score -= 1;
             else if (CheckIfExistForSecondPeriod(lecture.Seance) && lecture.Periode == 1)
-                score -= 10;
+                score -= 1;
         }
         
 
@@ -129,8 +122,8 @@ public class TimetableScorer
                 if (lecture.Teacher?.Seances.Count > 0)
                 {
                     score += lecture.Teacher.Seances.Any(x => x.Number == lecture.Seance)
-                        ? -10
-                        : 10;
+                        ? -1
+                        : 1;
                 }
             }
         }
@@ -140,15 +133,15 @@ public class TimetableScorer
         {
             var lectures = group.OrderBy(l => l.Seance).ToList();
 
-            /*foreach (var lecture in lectures)
+            foreach (var lecture in lectures)
             {
                 if (lecture.ClassRoom.SeanceLbrSalles.Count > 0)
                 {
                     score += lecture.ClassRoom.SeanceLbrSalles.Any(x => x.Number == lecture.Seance)
-                        ? -100
-                        : 100;
+                        ? -1
+                        : 1;
                 }
-            }*/
+            }
             // Succession Penalty/Bonus
             for (int i = 0; i < lectures.Count; i++)
             {
@@ -158,11 +151,11 @@ public class TimetableScorer
                     bool isTooFarFromNext = lectures[i + 1].Seance - lectures[i].Seance > 1;
 
                     if (isLastSeance && isTooFarFromNext)
-                        score -= 5;
+                        score -= 1;
                 }
                 else
                 {
-                    score += 5;
+                    score += 1;
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using PlaninngResolver.Domain.Entities;
+﻿using PlaninngResolver.Domain.Application.TimeTable;
+using PlaninngResolver.Domain.Entities;
 
 namespace PlaninngResolver.Domain.Application.Rules;
 
@@ -22,7 +23,7 @@ public class SimulatedAnnealingAcceptor
         double currentScore = _scorer.CalculateScore(currentTimetable);
         double newScore = _scorer.CalculateScore(newTimetable);
         Console.WriteLine(currentScore + " " + newScore);
-        if (newScore < currentScore)
+        if (newScore > currentScore)
         {
             return true;
         }

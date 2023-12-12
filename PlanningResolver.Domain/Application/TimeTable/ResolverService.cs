@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlaninngResolver.Domain.Application.DTOs;
+using PlaninngResolver.Domain.Application.Rules;
 using PlaninngResolver.Domain.Entities;
 using PlaninngResolver.Domain.Interfaces;
 
-namespace PlaninngResolver.Domain.Application.Rules;
+namespace PlaninngResolver.Domain.Application.TimeTable;
 
 public class ResolverService : IResolverService
 {
@@ -30,12 +31,16 @@ public class ResolverService : IResolverService
         var sol = new MultiGeneration();
         sol.Lectures = planing;
         sol.CalculateFitness();
-        var simulation = new TimetableSearch(planing, rooms); 
-        simulation.Run();
-        Console.WriteLine(simulation.GetBestScore());
+        var simulation = new TimetableSearch(planing, rooms);
+        var bestSol = simulation.RunHillClimbing();
+        simulation.Run(bestSol);
         foreach (var lecture in simulation.GetBestTimetable())
         {
-            _lectureRepo.AddAsync(lecture).GetAwaiter().GetResult();
+            lecture.Teacher = null;
+            lecture.ClassRoom = null;
+            _lectureRepo.AddAsync(lecture)
+                .GetAwaiter()
+                .GetResult();
         }
 
         _lectureRepo.UnitOfWork.SaveChangesAsync().GetAwaiter().GetResult();
@@ -45,6 +50,7 @@ public class ResolverService : IResolverService
     {
         var rooms = _classRoomRepository
             .GetAll()
+            .AsNoTracking()
             .Include(x=>x.SeanceLbrSalles)
             .Where(x => x.FaculteId == fid)
             .ToList();
@@ -54,6 +60,7 @@ public class ResolverService : IResolverService
     {
         return _lectureRepository
             .GetAll()
+            .AsNoTracking()
             .Include(x => x.Section)
             .Include(x => x.Section.Specialite)
             .Include(x => x.Section.Year)

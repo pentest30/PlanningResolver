@@ -1,6 +1,8 @@
-﻿using PlaninngResolver.Domain.Entities;
+﻿using PlaninngResolver.Domain.Application.Rules;
+using PlaninngResolver.Domain.Entities;
+using PlaninngResolver.Domain.Interfaces;
 
-namespace PlaninngResolver.Domain.Application.Rules;
+namespace PlaninngResolver.Domain.Application.TimeTable;
 
 public class TimetableSearch
 {
@@ -19,11 +21,39 @@ public class TimetableSearch
         _random = new Random();
         _scorer = new TimetableScorer(_timetableService);
         _acceptor = new SimulatedAnnealingAcceptor( _scorer);
-        _acceptor.SetStartingTemperature(100000); // Example starting temperature
+        _acceptor.SetStartingTemperature(10000000); // Example starting temperature
+    }
+    public List<Lecture> RunHillClimbing()
+    {
+        List<Lecture> currentTimetable = DeepCopyListOfLectures(_currentTimetable);
+        var currentScore = _scorer.CalculateScore(currentTimetable);
+
+        int improvementFound = 10000;
+        do
+        {
+            
+            List<Lecture> neighbor = GenerateNewTimetable(currentTimetable);
+            var neighborScore = _scorer.CalculateScore(neighbor);
+
+            if (neighborScore > currentScore)
+            {
+                Console.WriteLine("scores of HC: " + neighborScore + ":" + currentScore);
+                currentTimetable = DeepCopyListOfLectures(neighbor);
+                currentScore = neighborScore;
+                
+            }
+            improvementFound--;
+            Console.WriteLine(improvementFound +" "+ currentScore);
+        }
+        while (improvementFound>0);
+
+        return currentTimetable;
     }
 
-    public void Run()
+    public void Run(List<Lecture> initialSolution)
     {
+        _currentTimetable = new List<Lecture>();
+        _currentTimetable = DeepCopyListOfLectures(initialSolution);
         for (double timeGradient = 0; timeGradient <= 1; timeGradient += 0.00001)
         {
             List<Lecture> newTimetable = GenerateNewTimetable(_currentTimetable); // Method to generate new timetable
@@ -35,7 +65,6 @@ public class TimetableSearch
                     _bestTimetable = new List<Lecture>(newTimetable);
                     _bestScore = newScore;
                     Console.WriteLine("Best score: " + _bestScore);
-                   // _currentTimetable = new List<Lecture>(_bestTimetable);
                 } 
                 _currentTimetable = new List<Lecture>(newTimetable);
             }
@@ -56,42 +85,94 @@ public class TimetableSearch
 
     private List<Lecture> GenerateNewTimetable(List<Lecture> solution)
     {
-        // Implement logic to generate a new timetable
         var newSolution = DeepCopyListOfLectures(solution);
-        int numberOfMutations = _random.Next(solution.Count/100);
+        int numberOfMutations = _random.Next(1, Math.Max(2, solution.Count / 10));  // Limit the number of mutations
 
         for (int i = 0; i < numberOfMutations; i++)
         {
             int index = _random.Next(solution.Count);
-            int changeType = _random.Next(3); // Increased range for additional mutation types
+            Lecture lectureToMutate = newSolution[index];
+            var shouldMove = ShouldBeMoved(lectureToMutate);
+            if(!shouldMove) continue;
+            int changeType = _random.Next(3);  // Consider adding more mutation types
 
             switch (changeType)
             {
                 case 0: // Change Seance
-                    newSolution[index].Seance = _random.Next(1, 36);
+                    // Ensure the new seance respects the constraints
+                    lectureToMutate.Seance = FindNewValidSeance(lectureToMutate);
                     break;
                 case 1: // Change Classroom
-                    var rooms = _rooms.Where(x => x.ClassRoomTypeId == newSolution[index].ClassRoomTypeId).ToList();
-                    newSolution[index].ClassRoomId = rooms[_random.Next(rooms.Count)].Id;
+                    // Change classroom considering capacity and suitability
+                    lectureToMutate.ClassRoomId = FindNewValidClassroom(lectureToMutate);
+                    lectureToMutate.ClassRoom = _rooms.FirstOrDefault(x => x.Id == lectureToMutate.ClassRoomId);
                     break;
-                case 2:
-                {
-                    int firstIndex = _random.Next(solution.Count);
-                    int secondIndex;
-                    do
-                    {
-                        secondIndex = _random.Next(solution.Count);
-
-                    } while (secondIndex == firstIndex);
-
-                    (newSolution[firstIndex].CourseId, newSolution[secondIndex].CourseId) = (newSolution[secondIndex].CourseId, newSolution[firstIndex].CourseId);
-                }
+                case 2: // Swap Courses
+                    // Ensure the swap makes sense (e.g., teachers are qualified for the new courses)
+                    SwapCourses(newSolution, index);
                     break;
-                // Add more cases as needed
+                // Additional cases for other types of mutations
+            }
+        }
+        return newSolution;
+    }
+    private bool ShouldBeMoved(Lecture lecture)
+    {
+        // Check if the lecture conflicts with any other lecture
+        return _currentTimetable.Any(otherLecture => 
+            otherLecture.Seance == lecture.Seance && (
+                otherLecture.TeacherId == lecture.TeacherId ||
+                otherLecture.ClassRoomId == lecture.ClassRoomId ||
+                (otherLecture.SectionId == lecture.SectionId && (lecture.GroupeId == null || otherLecture.GroupeId == null)) ||
+                (lecture.GroupeId != null && otherLecture.GroupeId == lecture.GroupeId)
+            )
+        );
+    }
+// Implement these methods to ensure mutations are valid and meaningful
+    private int FindNewValidSeance(Lecture lecture)
+    {
+        List<int> validSeances = Enumerable.Range(1, 36).ToList(); // Assuming 36 time slots
+        // Remove seances that would cause a conflict
+        foreach (var l in _currentTimetable)
+        {
+            if (l.TeacherId == lecture.TeacherId || l.ClassRoomId == lecture.ClassRoomId)
+            {
+                validSeances.Remove(l.Seance);
             }
         }
 
-        return newSolution.ToList();
+        return validSeances.Any() ? validSeances[_random.Next(validSeances.Count)] : lecture.Seance;
+    }
+    private int FindNewValidClassroom(Lecture lecture)
+    {
+        var suitableClassrooms = _rooms.Where(r =>r.ClassRoomTypeId == lecture.ClassRoomTypeId).ToList();
+        // Filter out classrooms that are already occupied in the desired seance
+        suitableClassrooms = suitableClassrooms.Where(r => !_currentTimetable.Any(l => l.ClassRoomId == r.Id && l.Seance == lecture.Seance)).ToList();
+        // Return a random suitable and available classroom
+        return suitableClassrooms.Any() ? suitableClassrooms[_random.Next(suitableClassrooms.Count)].Id : lecture.ClassRoomId.Value;
+    }
+    
+    private void SwapCourses(List<Lecture> solution, int index)
+    {
+        var firstLecture = solution[index];
+        int secondIndex;
+        do
+        {
+            secondIndex = _random.Next(solution.Count);
+        } while (secondIndex == index);
+
+        var secondLecture = solution[secondIndex];
+
+        // Swap CourseId and related attributes
+        SwapLectureAttributes(firstLecture, secondLecture);
+    }
+
+    private void SwapLectureAttributes(Lecture firstLecture, Lecture secondLecture)
+    {
+        (firstLecture.CourseId, secondLecture.CourseId) = (secondLecture.CourseId, firstLecture.CourseId);
+        (firstLecture.TeacherId, secondLecture.TeacherId) = (secondLecture.TeacherId, firstLecture.TeacherId);
+        (firstLecture.SectionId, secondLecture.SectionId) = (secondLecture.SectionId, firstLecture.SectionId);
+        (firstLecture.GroupeId, secondLecture.GroupeId) = (secondLecture.GroupeId, firstLecture.GroupeId);
     }
 
     private List<Lecture> DeepCopyListOfLectures(List<Lecture> originalList)
@@ -118,7 +199,9 @@ public class TimetableSearch
                 Solved = oldLecture.Solved,
                 Display = oldLecture.Display,
                 Jour = oldLecture.Jour,
-                Time = oldLecture.Time
+                Time = oldLecture.Time, 
+                ClassRoom = oldLecture.ClassRoom,
+                Teacher = oldLecture.Teacher
                 // Repeat for other reference types
             };
 

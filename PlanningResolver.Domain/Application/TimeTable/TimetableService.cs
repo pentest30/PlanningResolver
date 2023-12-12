@@ -1,10 +1,6 @@
-﻿namespace PlaninngResolver.Domain.Application.Rules;
+﻿using PlaninngResolver.Domain.Interfaces;
 
-public interface ITimetableService
-{
-    List<int> GetFirstHalfPeriodsPerWeek();
-    List<int> GetSecondHalfPeriodsPerWeek();
-}
+namespace PlaninngResolver.Domain.Application.TimeTable;
 
 public class TimetableService : ITimetableService
 {
