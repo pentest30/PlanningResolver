@@ -26,9 +26,9 @@ public class TimetableGenerator
                 };
 
                 AssignSeanceAndRoom(slot, tc, rooms, timetable, random);
-                Console.WriteLine($"Solution: count {timetable.Count + 1} , {tc.Teacher.Nom}, {tc.Course.Name},{slot.ClassRoomId}, {tc.ClassRoomType.Name} {slot.Seance}");
-
                 timetable.Add(slot);
+                Console.WriteLine($"Solution: count {timetable.Count} , {tc.Teacher.Nom}, {tc.Course.Name},{slot.ClassRoomId}, {tc.ClassRoomType.Name} {slot.Seance}");
+
             }
         }
 
