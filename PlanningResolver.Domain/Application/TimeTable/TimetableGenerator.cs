@@ -1,14 +1,24 @@
 ﻿using PlaninngResolver.Domain.Entities;
 
-namespace PlaninngResolver.Domain.Application.Rules;
+namespace PlaninngResolver.Domain.Application.TimeTable;
+
+using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 
 public class TimetableGenerator
 {
+    private readonly HashSet<Lecture> _timetable;
+    private readonly Random _random;
+
+    public TimetableGenerator()
+    {
+        _timetable = new HashSet<Lecture>();
+        _random = new Random();
+    }
+
     public List<Lecture> GenerateInitialTimetable(List<Tc> tcs, List<ClassRoom> rooms)
     {
-        var timetable = new List<Lecture>();
-        var random = new Random();
-
         foreach (var tc in tcs)
         {
             for (int i = 0; i < tc.ScheduleWieght; i++)
@@ -25,59 +35,83 @@ public class TimetableGenerator
                     FaculteId = tc.Teacher.FaculteId,
                 };
 
-                AssignSeanceAndRoom(slot, tc, rooms, timetable, random);
-                timetable.Add(slot);
-                Console.WriteLine($"Solution: count {timetable.Count} , {tc.Teacher.Nom}, {tc.Course.Name},{slot.ClassRoomId}, {tc.ClassRoomType.Name} {slot.Seance}");
-
+                AssignSeanceAndRoom(slot, rooms);
+                _timetable.Add(slot);
+                Console.WriteLine
+                (
+                    $"Solution: count {_timetable.Count} ," +
+                    $" {tc.Teacher.Nom}, {tc.Course.Name}," +
+                    $"{slot.ClassRoomId}, " +
+                    $"{tc.ClassRoomType.Name} " +
+                    $"{slot.Seance}"
+                );
             }
         }
 
-        return timetable;
+        return new List<Lecture>(_timetable);
     }
 
-    private void AssignSeanceAndRoom(Lecture slot, Tc tc, List<ClassRoom> rooms, List<Lecture> timetable, Random random)
+    private void AssignSeanceAndRoom(Lecture slot, List<ClassRoom> rooms)
     {
         bool isAssigned = false;
         while (!isAssigned)
         {
-            int seance = random.Next(1, 37); // Assuming there are 36 seances
-            var availableRooms = rooms.Where(r => r.ClassRoomTypeId == tc.ClassRoomTypeId&& !IsRoomBusy(r.Id, seance, timetable)).ToList();
+            int seance = GenerateRandomSeance();
+            var availableRooms = GetAvailableRooms(slot.ClassRoomTypeId, seance, rooms);
 
             if (!availableRooms.Any() ||
-                IsTeacherBusy(tc.TeacherId, seance, timetable)
-                || IsSectionOrGroupBusy(tc.SectionId, tc.GroupeId, seance, timetable)) continue;
+                IsTeacherBusy(slot.TeacherId, seance) ||
+                IsSectionOrGroupBusy(slot.SectionId, slot.GroupeId, seance))
+            {
+                continue;
+            }
+
             slot.Seance = seance;
-            var room = availableRooms[random.Next(availableRooms.Count)];
+            var room = availableRooms[_random.Next(availableRooms.Count)];
             slot.ClassRoomId = room.Id;
             slot.ClassRoom = room;
             isAssigned = true;
         }
     }
 
-    private bool IsTeacherBusy(int teacherId, int seance, List<Lecture> timetable)
+    private int GenerateRandomSeance()
     {
-        return timetable.Any(t => t.TeacherId == teacherId && t.Seance == seance);
+        byte[] randomNumber = new byte[4];
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(randomNumber);
+        }
+        const int totalSeances = 36;
+        return BitConverter.ToInt32(randomNumber, 0) % totalSeances + 1;
     }
 
-    private bool IsRoomBusy(int roomId, int seance, List<Lecture> timetable)
+    private List<ClassRoom> GetAvailableRooms(int classRoomTypeId, int seance, List<ClassRoom> rooms)
     {
-        return timetable.Any(t => t.ClassRoomId == roomId && t.Seance == seance);
+        return rooms.FindAll(r => r.ClassRoomTypeId == classRoomTypeId && !IsRoomBusy(r.Id, seance));
     }
-    private bool IsSectionOrGroupBusy(int sectionId, int? groupId, int seance, List<Lecture> timetable)
+
+    private bool IsTeacherBusy(int teacherId, int seance)
+    {
+        return _timetable.Any(t => t.TeacherId == teacherId && t.Seance == seance);
+    }
+
+    private bool IsRoomBusy(int roomId, int seance)
+    {
+        return _timetable.Any(t => t.ClassRoomId == roomId && t.Seance == seance);
+    }
+
+    private bool IsSectionOrGroupBusy(int sectionId, int? groupId, int seance)
     {
         if (groupId == null)
         {
-            // Check for any lecture in the section (without specific group) occupying the seance
-            return timetable.Any(lecture => lecture.SectionId == sectionId && lecture.Seance == seance);
+            return _timetable.Any(lecture => lecture.SectionId == sectionId && lecture.Seance == seance);
         }
 
-        // Check for any section-wide lecture or specific group lecture occupying the seance
-        if (timetable.Any(
-                lecture =>
-                    (lecture.SectionId == sectionId && lecture.GroupeId == null) && lecture.Seance == seance))
+        if (_timetable.Any(lecture => lecture.SectionId == sectionId && lecture.GroupeId == null && lecture.Seance == seance))
         {
             return true;
         }
-        return timetable.Any(lecture => lecture.GroupeId == groupId && lecture.Seance == seance);
+
+        return _timetable.Any(lecture => lecture.GroupeId == groupId && lecture.Seance == seance);
     }
 }

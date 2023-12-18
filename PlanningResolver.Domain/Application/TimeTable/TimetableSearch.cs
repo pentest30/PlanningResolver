@@ -1,5 +1,4 @@
-﻿using PlaninngResolver.Domain.Application.Rules;
-using PlaninngResolver.Domain.Entities;
+﻿using PlaninngResolver.Domain.Entities;
 using PlaninngResolver.Domain.Interfaces;
 
 namespace PlaninngResolver.Domain.Application.TimeTable;
@@ -54,7 +53,7 @@ public class TimetableSearch
     {
         _currentTimetable = new List<Lecture>();
         _currentTimetable = DeepCopyListOfLectures(initialSolution);
-        for (double timeGradient = 0; timeGradient <= 1; timeGradient += 0.000001)
+        for (double timeGradient = 0; timeGradient <= 1; timeGradient += 0.0001)
         {
             List<Lecture> newTimetable = GenerateNewTimetable(_currentTimetable); // Method to generate new timetable
             var newScore = _scorer.CalculateScore(newTimetable);
@@ -92,8 +91,8 @@ public class TimetableSearch
         {
             int index = _random.Next(solution.Count);
             Lecture lectureToMutate = newSolution[index];
-            /*var shouldMove = ShouldBeMoved(lectureToMutate);
-            if(!shouldMove) continue;*/
+            var shouldMove = ShouldBeMoved(lectureToMutate);
+            if(!shouldMove) continue;
             int changeType = _random.Next(3);  // Consider adding more mutation types
 
             switch (changeType)

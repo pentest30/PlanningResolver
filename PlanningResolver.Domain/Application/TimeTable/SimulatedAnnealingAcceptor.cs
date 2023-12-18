@@ -1,7 +1,6 @@
-﻿using PlaninngResolver.Domain.Application.TimeTable;
-using PlaninngResolver.Domain.Entities;
+﻿using PlaninngResolver.Domain.Entities;
 
-namespace PlaninngResolver.Domain.Application.Rules;
+namespace PlaninngResolver.Domain.Application.TimeTable;
 
 public class SimulatedAnnealingAcceptor
 {

@@ -11,7 +11,7 @@ public class TimetableService : ITimetableService
     {
         if (daysInWeek > 7)
         {
-            throw new InvalidOperationException("days in week cannot be upper then 7.");
+            throw new InvalidOperationException("days in week cannot be upper than 7.");
         }
         _daysInWeek = daysInWeek;
         _slotsPerDay = slotsPerDay;

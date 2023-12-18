@@ -1,6 +1,6 @@
 ﻿using PlaninngResolver.Domain.Application.DTOs;
 
-namespace PlaninngResolver.Domain.Application.Rules;
+namespace PlaninngResolver.Domain.Application.TimeTable;
 
 public static class PlanningExtension
 {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlaninngResolver.Domain.Application.DTOs;
-using PlaninngResolver.Domain.Application.Rules;
 using PlaninngResolver.Domain.Entities;
 using PlaninngResolver.Domain.Interfaces;
 
